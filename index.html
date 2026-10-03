@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jadwal pakaian</title>
+<style>
+  :root {
+    --bg: #131210;
+    --card: #1e1c18;
+    --line: #2f2c26;
+    --text: #f3eedf;
+    --muted: #8a8272;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "DejaVu Sans", "Verdana", system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    min-height: 100vh;
+  }
+  .card {
+    width: 100%;
+    max-width: 236px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 12px 12px 8px;
+  }
+  h1 { margin: 0 0 6px; font-size: 14px; font-weight: 700; }
+  h2 { margin: 0 0 2px; font-size: 11px; font-weight: 700; }
+  .row {
+    display: grid;
+    grid-template-columns: 36px 76px 1fr;
+    align-items: center;
+    column-gap: 4px;
+    height: 34px;
+  }
+  .day { font-weight: 700; font-size: 10px; }
+  .num { color: var(--muted); font-size: 10px; padding-left: 2px; }
+  .icons { display: flex; align-items: center; gap: 1px; }
+  .icons .sep { width: 1px; height: 16px; background: var(--line); margin: 0 2px 0 1px; }
+  .icons svg { width: 17px; height: 17px; flex: none; }
+  .name { font-size: 10px; line-height: 1.25; }
+  .sub { color: var(--muted); }
+  .alt { font-size: 7px; margin-left: 2px; }
+  hr { border: 0; border-top: 1px dashed var(--line); margin: 2px 0 6px; }
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Jadwal pakaian</h1>
+  <div id="jadwal"></div>
+  <hr>
+  <h2>Cadangan</h2>
+  <div id="cadangan" class="cadangan"></div>
+</main>
+
+<script>
+  const SHIRT = (c, o) => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 6 L8 11 L3 21 L11 25 L13 22 L13 42 L35 42 L35 22 L37 25 L45 21 L40 11 L31 6 Q24 12 17 6 Z" fill="${c}" stroke="${o || 'rgba(255,255,255,.35)'}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+  const PANTS = (c, o) => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 5 H35 L38 43 H27 L24 20 L21 43 H10 Z" fill="${c}" stroke="${o || 'rgba(255,255,255,.35)'}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+
+  const HITAM = "#242321", ABU = "#7c7b79", KREM = "#ece3c4";
+
+  const jadwal = [
+    { day: "Senin",  shirts: ["#9a4a3f"], pants: [KREM, ABU], name: "Mahogani", sub: "Krem", alt: true },
+    { day: "Selasa", shirts: ["#a9dcf3"], pants: [HITAM, ABU], name: "Biru muda", sub: "Hitam doff", alt: true },
+    { day: "Rabu",   shirts: ["#1d2b57"], pants: [HITAM, ABU], name: "Biru dongker", sub: "Hitam doff", alt: true },
+    { day: "Kamis",  shirts: ["#5b6b2e"], pants: ["#7a3a14"], name: "Army", sub: "Coklat" },
+    { day: "Jumat",  shirts: ["#a82b62", "#c49a2a"], pants: [HITAM], name: "Batik 1 + Batik 2", sub: "Hitam doff" },
+    { day: "Sabtu",  shirts: ["#7a3a14"], pants: [HITAM, ABU], name: "Polo coklat", sub: "Hitam doff", alt: true },
+  ];
+
+  const cadangan = [
+    { n: 1, shirt: "#1b1a18", pants: ABU, name: "Hitam", sub: "Abu-abu", outline: "rgba(255,255,255,.3)" },
+    { n: 2, shirt: "#2a2927", pants: ABU, name: "Polo hitam doff", sub: "Abu-abu" },
+    { n: 3, shirt: "#b08a69", pants: KREM, name: "Coklat susu", sub: "Krem" },
+  ];
+
+  const row = (label, cls, icons, name, sub, alt) => `
+    <div class="row">
+      <div class="${cls}">${label}</div>
+      <div class="icons">${icons}</div>
+      <div class="name">${name}<div class="sub">${sub}${alt ? '<span class="alt">alt</span>' : ''}</div></div>
+    </div>`;
+
+  document.getElementById("jadwal").innerHTML = jadwal.map(d => {
+    const icons = d.shirts.map(c => SHIRT(c)).join("") + '<span class="sep"></span>' + d.pants.map(c => PANTS(c)).join("");
+    return row(d.day, "day", icons, d.name, d.sub, d.alt);
+  }).join("");
+
+  document.getElementById("cadangan").innerHTML = cadangan.map(d => {
+    const icons = SHIRT(d.shirt, d.outline) + '<span class="sep"></span>' + PANTS(d.pants);
+    return row(d.n, "num", icons, d.name, d.sub, false);
+  }).join("");
+</script>
+</body>
+</html>
